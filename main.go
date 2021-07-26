@@ -3,20 +3,26 @@ package main
 import "fmt"
 
 func main() {
-	golang := []string{"g", "o", "l", "a", "n", "g"}
+	// i++ => i = i + 1 => i += 1
+	for i := 0; i < 10; i++ {
+		fmt.Printf("Index : %d\n", i)
+	}
 
-	fmt.Printf("%v (len='%v', cap='%v')\n", golang, len(golang), cap(golang))
+	i := 0
+	for i < 4 {
+		fmt.Printf("While => index : %d\n", i)
+		i++
+	}
 
-	fmt.Println(golang[0:2])
-	fmt.Println(golang[:2])
-	fmt.Println(golang[2:])
-
-	tab := make([]string, len(golang))
-	copy(tab, golang)
-
-	fmt.Printf("tab: %v (len='%v', cap='%v')\n", tab, len(tab), cap(tab))
-
-	golang[3] = "Sam"
-	fmt.Printf("%v (len='%v', cap='%v')\n", golang, len(golang), cap(golang))
-	fmt.Printf("tab: %v (len='%v', cap='%v')\n", tab, len(tab), cap(tab))
+	i = 0
+	for {
+		i++
+		if i%2 == 1 {
+			continue
+		}
+		fmt.Printf("Loop %d", i)
+		if i >= 7 {
+			break
+		}
+	}
 }
