@@ -3,26 +3,27 @@ package main
 import "fmt"
 
 func main() {
-	// i++ => i = i + 1 => i += 1
-	for i := 0; i < 10; i++ {
-		fmt.Printf("Index : %d\n", i)
+	names := []string{
+		"Samuel",
+		"Nicolas",
+		"Patrick",
+		"Lony",
+		"Perséa",
 	}
 
-	i := 0
-	for i < 4 {
-		fmt.Printf("While => index : %d\n", i)
-		i++
-	}
+	//for i := 0; i < len(names); i++ {
+	//	fmt.Printf("Name : %s\n", names[i])
+	//}
 
-	i = 0
-	for {
-		i++
-		if i%2 == 1 {
-			continue
-		}
-		fmt.Printf("Loop %d", i)
-		if i >= 7 {
-			break
-		}
+	//for index, value := range names {
+	//	fmt.Printf("Name : %s à l'index %d\n", value, index)
+	//}
+
+	for _, value := range names {
+		fmt.Printf("Name : %s\n", value)
+	}
+	fmt.Println("----------------------")
+	for index := range names {
+		fmt.Printf("Name : %s\n", names[index])
 	}
 }
