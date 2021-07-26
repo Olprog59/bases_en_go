@@ -1,36 +1,23 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
+import "fmt"
 
 func main() {
-	display("samuel", "mich", "59", "com", 40, 25)
+	nums := make([]int, 2, 3)
+	nums[0] = -17
+	nums[1] = 42
 
-	nomComplet := format("mich", "sam")
-	fmt.Println(nomComplet)
+	fmt.Printf("%v (len='%v', cap='%v')\n", nums, len(nums), cap(nums))
+	// fmt.Println(nums + " (len='" + len(nums)  + "', cap('" + cap(nums) + "'))")
 
-	nom, prenom := splitName1("samuel michaux")
-	println(nom, prenom)
-	
-	nom, _ = splitName1("toto tata")
-	println(nom, prenom)
-}
+	nums = append(nums, 25)
+	fmt.Printf("%v (len='%v', cap='%v')\n", nums, len(nums), cap(nums))
 
-func display(nom, prenom, codePostal, ville string, age, num int){
-	fmt.Printf("Je m'appelle %s %s. J'habite à %s avec le code postal %s. J'ai %d. Mon num de rue est %d\n",
-		nom, prenom, ville, codePostal, age, num)
-}
-
-func format(nom, prenom string) (nomComplet string) {
-	nomComplet = prenom + " " + nom
-	return nomComplet
-}
-
-func splitName1(nomComplet string) (prenom, nom string) {
-	tab := strings.Split(nomComplet, " ")
-	prenom = tab[0]
-	nom = tab[1]
-	return prenom, nom
+	nums = append(nums, 2021)
+	fmt.Printf("%v (len='%v', cap='%v')\n", nums, len(nums), cap(nums))
+	nums = append(nums, 2021)
+	nums = append(nums, 2021)
+	nums = append(nums, 2021)
+	nums = append(nums, 2021)
+	fmt.Printf("%v (len='%v', cap='%v')\n", nums, len(nums), cap(nums))
 }
