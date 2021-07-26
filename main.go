@@ -1,22 +1,16 @@
 package main
 
-import (
-	"fmt"
-	"os"
-)
+import "fmt"
 
 func main() {
-	prenom := "samuel"
-	if prenom == "samuel" {
-		fmt.Println("félicitations")
-	} else if prenom == "sam" {
-		fmt.Println("dommage")
-	} else {
-		fmt.Println("autre")
-	}
-	if file, err := os.Stat("test.txt"); os.IsNotExist(err) {
-		fmt.Println("fichier introuvable")
-	} else {
-		fmt.Println(file.Size())
+	jour := 3
+
+	switch jour {
+	case 0, 1, 2, 3, 4:
+		fmt.Println("bon courage")
+	case 5, 6:
+		fmt.Println("bon week-end")
+	default:
+		fmt.Println("il y a un petit problème")
 	}
 }
