@@ -1,35 +1,60 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
+
+type Post struct {
+	Titre       string
+	Description string
+	published   bool
+}
+
+func (p Post) HeadLine() string {
+	return fmt.Sprintf("%v - %v\n", p.Titre, p.Description[:50])
+}
+
+func (p Post) Published() bool {
+	return p.published
+}
+
+func (p *Post) publish() {
+	p.published = true
+}
+
+func (p *Post) unPublish() {
+	p.published = false
+}
 
 func main() {
-	var age = 40
+	// post := &Post{
+	post := Post{
+		Titre: "Félicitations pour un nouveau poste attendu",
+		Description: `Bonjour Jean, 
+Je suis très content que tu aies enfin le poste que tu esperais depuis quelques année 
+maintenant. Je sais que tu es fin prêt pour assumer un tel poste et que tu pourras 
+t'épanouir pleinnement dans cette nouvelle société. Je te félicite pour ce nouveau
+poste et suis très impressionné par le parcours que tu as suvi jusqu'à présent. 
+Je sais que tu n'as pas fini de grimper et te souhaite le meilleur dans cette nouvelle
+étape de ta vie professionnelle. Bonne chance et bon courage pour ta prise de poste. 
+N'hésite pas à me donner des nouvelles dans quelques semaines. 
+Félicitations ! 
+Francis`,
+		published: false,
+	}
 
-	fmt.Println(age)
-	fmt.Println(&age)
+	fmt.Printf("Mon post est : %v\n", post.HeadLine())
 
-	var yearOld = age
-	fmt.Println(yearOld)
-	fmt.Println(&yearOld)
+	post.publish()
 
-	yearOld = 25
-	fmt.Println(yearOld)
-	fmt.Println(&yearOld)
-	fmt.Println(age)
-	fmt.Println(&age)
+	//fmt.Printf("%#+v\n", post)
 
-	var num1 = 15
-	fmt.Printf("num1 = %v\n", num1)
-	fmt.Printf("num1 = %v\n", &num1)
+	//UpperCase(post)
+	UpperCase(&post)
+	fmt.Println(post.Titre)
+}
 
-	var num2 = &num1
-	fmt.Printf("num1 = %v\n", num1)
-	fmt.Printf("num1 type = %T\n", num1)
-	fmt.Printf("num2 = %v\n", num2)
-
-	num1 = 24
-	fmt.Printf("num1 = %v\n", num1)
-	fmt.Printf("num2 = %v\n", num2)
-	fmt.Printf("num2 = %v\n", *num2)
-
+func UpperCase(post *Post) {
+	post.Titre = strings.ToUpper(post.Titre)
 }
