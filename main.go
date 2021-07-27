@@ -1,30 +1,24 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type User struct {
-	firstname string
-	lastname  string
-	age       int
+	Name  string
+	Email string
+}
+
+func (u *User) UpperCase() {
+	fmt.Println(strings.ToUpper(u.Name))
+	u.Name = strings.ToUpper(u.Name)
 }
 
 func main() {
-	var sam User
-	sam.firstname = "samuel"
-	//sam.lastname = "michaux"
-	sam.age = 40
+	user := User{"toto", "sam@sam.fr"}
 
-	fmt.Printf("%#+v\n", sam)
+	user.UpperCase()
 
-	lony := User{
-		"lony",
-		"michaux",
-		16,
-	}
-	fmt.Printf("%#+v\n", lony)
-
-	sabrina := User{
-		firstname: "Sabrina",
-	}
-	fmt.Printf("%#+v\n", sabrina)
+	fmt.Println(user)
 }
