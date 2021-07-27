@@ -1,24 +1,35 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
-
-type User struct {
-	Name  string
-	Email string
-}
-
-func (u *User) UpperCase() {
-	fmt.Println(strings.ToUpper(u.Name))
-	u.Name = strings.ToUpper(u.Name)
-}
+import "fmt"
 
 func main() {
-	user := User{"toto", "sam@sam.fr"}
+	var age = 40
 
-	user.UpperCase()
+	fmt.Println(age)
+	fmt.Println(&age)
 
-	fmt.Println(user)
+	var yearOld = age
+	fmt.Println(yearOld)
+	fmt.Println(&yearOld)
+
+	yearOld = 25
+	fmt.Println(yearOld)
+	fmt.Println(&yearOld)
+	fmt.Println(age)
+	fmt.Println(&age)
+
+	var num1 = 15
+	fmt.Printf("num1 = %v\n", num1)
+	fmt.Printf("num1 = %v\n", &num1)
+
+	var num2 = &num1
+	fmt.Printf("num1 = %v\n", num1)
+	fmt.Printf("num1 type = %T\n", num1)
+	fmt.Printf("num2 = %v\n", num2)
+
+	num1 = 24
+	fmt.Printf("num1 = %v\n", num1)
+	fmt.Printf("num2 = %v\n", num2)
+	fmt.Printf("num2 = %v\n", *num2)
+
 }
