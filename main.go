@@ -1,77 +1,103 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
-	"strings"
 )
 
-// Cette fonction doit respecter cette signature pour être une HandlerFunc
-func hello(w http.ResponseWriter, r *http.Request) {
-	// Ecriture d'un message en réponse HTTP
-	fmt.Fprintf(w, "Hello Gophers")
-}
-func search(w http.ResponseWriter, r *http.Request) {
-	q := r.URL.Query().Get("q")
-	p := r.URL.Query().Get("p")
-	fmt.Fprintf(w, "Search for term=%v. Current Page=%v", q, p)
-}
-func login(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		http.ServeFile(w, r, "index.html")
-	case http.MethodPost:
-		if err := r.ParseForm(); err != nil {
-			fmt.Fprintf(w, "ParseForm() failed: %v", err)
-		}
-		fmt.Fprintf(w, "Go login POST. value=%v\n", r.PostForm)
-		username := r.FormValue("username")
-		password := r.FormValue("password")
-
-		if username == "go" && password == "gopher" {
-			fmt.Fprintf(w, "Cool, vous êtes connecté")
-		} else {
-			fmt.Fprintf(w, "Désolé, les informations sont érronés")
-		}
-	}
+type Adresse struct {
+	Rue   string `json:"rue"`
+	Ville string `json:"ville"`
+	Pays  string `json:"pays,omitempty"`
 }
 
-func temp(w http.ResponseWriter, r *http.Request) {
-	funcMap := template.FuncMap{
-		"upperCase": func(str string) string {
-			return strings.ToUpper(str)
+type User struct {
+	Name string `json:"name"`
+	// on ignore le password en json avec : -
+	Password string  `json:"-"`
+	Email    string  `json:"email"`
+	Adresse  Adresse `json:"adresse"`
+}
+
+var users = []User{
+	{
+		Name:     "Samuel",
+		Password: "secret",
+		Email:    "samuel.michaux@gmail.com",
+		Adresse: Adresse{
+			Rue:   "17 chemin du moulin",
+			Ville: "Comines",
+			Pays:  "France",
 		},
-	}
-
-	tmpl, err := template.New("template.html").Funcs(funcMap).ParseFiles("template.html", "navbar.html", "footer.html")
-	if err != nil {
-		http.NotFound(w, r)
-	}
-
-	page := struct {
-		Titre string
-		Name  string
-		Nav   map[string]string
-	}{
-		Titre: "Templating",
-		Name:  "samuel michaux",
-		Nav:   map[string]string{"home": "/", "search": "/search", "login": "/login"},
-	}
-
-	tmpl.Execute(w, page)
+	},
+	{
+		Name:     "Sabrina",
+		Password: "supersecret",
+		Email:    "sabrina@sab.com",
+		Adresse: Adresse{
+			Rue:   "17 chemin du moulin",
+			Ville: "Comines",
+		},
+	},
 }
 
-func main() {
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-	// Associe un chemin à une fonction
-	http.HandleFunc("/", hello)
-	http.HandleFunc("/search", search)
-	http.HandleFunc("/login", login)
-	http.HandleFunc("/template", temp)
+func user(w http.ResponseWriter, r *http.Request) {
 
-	// Création du serveur HTTP écoutant sur le port 8080
+	// encodage du tableau User en JSON
+	b, err := json.MarshalIndent(users, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+}
+
+type PasswordJsonBody struct {
+	UserIndex         int    `json:"user_index"`
+	OldPassword       string `json:"old_password"`
+	NewPassword       string `json:"new_password"`
+	NewPasswordRepeat string `json:"new_password_repeat"`
+}
+
+func updatePassword(w http.ResponseWriter, r *http.Request) {
+	var p PasswordJsonBody
+
+	err := json.NewDecoder(r.Body).Decode(&p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("Update password parsed: %v\n", p)
+
+	if p.UserIndex < 0 || p.UserIndex > len(users)-1 {
+		msg := fmt.Sprintf("Invalid index. got user_index=%v, valid range=[0, %v]",
+			p.UserIndex, len(users)-1)
+		http.Error(w, msg, http.StatusBadRequest)
+		return
+	}
+
+	u := users[p.UserIndex]
+	if u.Password != p.OldPassword {
+		http.Error(w, "Old password do not match", http.StatusBadRequest)
+		return
+	}
+
+	if p.NewPassword != p.NewPasswordRepeat {
+		http.Error(w, "New passwords do not match", http.StatusBadRequest)
+		return
+	}
+
+	u.Password = p.NewPassword
+
+	fmt.Fprintf(w, "Password updated")
+}
+func main() {
+	http.HandleFunc("/users", user)
+	http.HandleFunc("/update_password", updatePassword)
+
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
