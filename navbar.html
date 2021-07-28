@@ -1,0 +1,9 @@
+{{ define "nav" }}
+<nav>
+  <ul>
+    {{ range $name, $lien := .Nav }}
+    <li><a href="{{ $lien }}">{{ $name }}</a></li>
+    {{ end }}
+  </ul>
+</nav>
+{{ end }}
